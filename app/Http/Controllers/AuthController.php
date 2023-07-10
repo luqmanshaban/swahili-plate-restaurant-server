@@ -33,22 +33,31 @@ class AuthController extends Controller
 
     public function login(Request $request) {
         $credentials = $request->only(['email', 'password']);
-
+    
         if(Auth::attempt($credentials)) {
             $user = Auth::user();
-
+    
             $admin = $user->hasRole('admin');
             $token = $user->createToken('auth-token')->plainTextToken;
             
-            return response()->json(['token' => $token, 'user' => $user, 'is admin' => $admin],200);
+            return response()->json([
+                'token' => $token,
+                'user' => $user,
+                'isAdmin' => $admin // Changed 'is admin' to 'isAdmin'
+            ], 200);
         }
+        
+        // If authentication fails, return a response indicating the error
+        return response()->json(['error' => 'Unauthorized'], 401);
     }
+    
 
-    public function logout(Request $request) {
-        $user = Auth::user();
+    public function logout(Request $request){
+        $user = $request->user();
+
         $user->tokens()->delete();
-        Auth::logout();
-        return response()->json(['message' => "Successfully logged out"], 200);
+
+        return response()->json(['message' => "Logout successful"]);
     }
     
 }

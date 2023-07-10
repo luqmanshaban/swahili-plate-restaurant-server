@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('status');
             $table->string('delivery_address');
             $table->string('contact')->nullable();
-            // $table->foreignId('payment_id')->constrained('payments');
+            $table->foreignId('payment_id')->constrained('payments');
             $table->timestamps();
         });
     }

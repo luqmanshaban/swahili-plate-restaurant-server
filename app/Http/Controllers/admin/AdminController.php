@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Role;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -13,6 +14,14 @@ class AdminController extends Controller
     public function index()
     {
         return "Admin Dashboard";
+    }
+
+    public function getAllCustomers() {
+        $users = Role::where('role', 'customer')->get();
+        if($users->count() === 0) {
+            return response()->json(['message' => "NO ACTIVE ORDERS FOUND"], 404);
+        }
+        return response()->json(['active orders' => $users], 200);
     }
 
     /**

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\admin\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\customer\CustomerController;
 use App\Http\Controllers\menu\MenuController;
@@ -10,12 +11,15 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/signup', [AuthController::class, 'signup']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
-Route::post('/logout', [AuthController::class, 'logout']);
-
-
-Route::post('/assign-role/{userId}', [RoleController::class, 'assignRole']);
 
 //
+
+Route::group(['middleware' => ['auth:sanctum', 'role:admin']], function() {
+    Route::post('/admin/assign-role/{userId}', [RoleController::class, 'assignRole']);
+    Route::get('/admin/dashboard', [AdminController::class, 'index']);
+    Route::get('/admin/get-customers', [AdminController::class, 'getAllCustomers']);
+    Route::post('/admin/logout', [AuthController::class, 'logout']);
+});
 
 Route::group(['middleware' => ['auth:sanctum', 'role:customer']], function() {
     Route::get('/dashboard', [CustomerController::class, 'index']);
@@ -24,6 +28,7 @@ Route::group(['middleware' => ['auth:sanctum', 'role:customer']], function() {
     Route::get('/menu/drinks', [MenuController::class, 'drinks']);
     Route::get('/menu/shawarma', [MenuController::class, 'shawarma']);
     Route::get('/orders/active', [OrderController::class, 'activeOrders']);
+    Route::post('/logout', [AuthController::class, 'logout']);
 });
 
 
