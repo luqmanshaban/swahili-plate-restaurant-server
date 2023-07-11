@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\admin\AdminController;
+use App\Http\Controllers\admin\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\customer\CustomerController;
 use App\Http\Controllers\menu\MenuController;
@@ -19,6 +20,7 @@ Route::group(['middleware' => ['auth:sanctum', 'role:admin']], function() {
     Route::get('/admin/dashboard', [AdminController::class, 'index']);
     Route::get('/admin/get-customers', [AdminController::class, 'getAllCustomers']);
     Route::post('/admin/logout', [AuthController::class, 'logout']);
+    Route::apiResource('users', UserController::class);
 });
 
 Route::group(['middleware' => ['auth:sanctum', 'role:customer']], function() {
@@ -28,7 +30,7 @@ Route::group(['middleware' => ['auth:sanctum', 'role:customer']], function() {
     Route::get('/menu/drinks', [MenuController::class, 'drinks']);
     Route::get('/menu/shawarma', [MenuController::class, 'shawarma']);
     Route::get('/orders/active', [OrderController::class, 'activeOrders']);
+    //orders
+    Route::apiResource('orders',OrderController::class);
     Route::post('/logout', [AuthController::class, 'logout']);
 });
-
-
