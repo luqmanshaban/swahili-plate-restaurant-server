@@ -12,6 +12,9 @@ class Orders extends Model
 
     protected $fillable = [
         'user_id',
+        'name',
+        'img',
+        'quantity',
         'total',
         'status',
         'delivery_address',

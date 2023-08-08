@@ -11,7 +11,12 @@ class MenuController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function topPick()
+
+     public function Menus() {
+        $menus = Menu::all();
+        return response()->json(['menus' => $menus]);
+     }
+     public function topPick()
     {
         $featuredMenu = Menu::where('category', 'topPick')->get();
         if($featuredMenu->count() === 0) {

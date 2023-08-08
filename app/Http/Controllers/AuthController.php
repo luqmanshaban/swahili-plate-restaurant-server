@@ -37,13 +37,14 @@ class AuthController extends Controller
         if(Auth::attempt($credentials)) {
             $user = Auth::user();
     
-            $admin = $user->hasRole('admin');
+            // $admin = $user->hasRole('admin');
+            $roles = $user->roles->pluck('role')->toArray();
             $token = $user->createToken('auth-token')->plainTextToken;
             
             return response()->json([
                 'token' => $token,
                 'user' => $user,
-                'isAdmin' => $admin // Changed 'is admin' to 'isAdmin'
+                'role' => $roles
             ], 200);
         }
         
