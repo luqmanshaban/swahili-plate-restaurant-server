@@ -26,63 +26,44 @@ class OrderController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-{
-    $user = Auth::user();
-
-    $validateOrder = Validator::make($request->all(), [
-        'name' => 'required|string',
-        'img' => 'required|string',
-        'quantity' => 'required|integer',
-        'total' => 'required|integer',
-    //     'status' => 'required|string',
-        // 'delivery_address' => 'required|string',
-        'contact' => 'nullable|string',
-    ]);
-
-    if ($validateOrder->fails()) {
-        return response()->json(['errors' => $validateOrder->errors()], 400);
-    }
-
-    $validatedOrder = $validateOrder->validated();
-    $validatedOrder['user_id'] = $user->id;
-    $validatedOrder['status'] = 'Processing';
-    $validatedOrder['delivery_address'] = 'North View Rd - Pangani';
-
-    $payment = Payment::where('user_id', $user->id)->first();
-
-    if (!$payment) {
-        return response()->json(['message' => 'Payment not found for the authenticated user.'], 404);
-    }
-
-    $validatedOrder['payment_id'] = $payment->id;
-
-    Orders::create($validatedOrder);
-
-    return response()->json(['message' => "Order Created Successfully", 'order' => $validatedOrder]);
-}
-
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
     {
-        //
+        $user = Auth::user();
+        $ordersArray = $request->input('orders');
+
+        $storedOrders = [];
+
+        foreach ($ordersArray as $orderData) {
+            $validateOrder = Validator::make($orderData, [
+                'name' => 'required|string',
+                'img' => 'required|string',
+                'quantity' => 'required|integer',
+                'total' => 'required|integer',
+                'contact' => 'nullable|string',
+            ]);
+
+            if ($validateOrder->fails()) {
+                return response()->json(['errors' => $validateOrder->errors()], 400);
+            }
+
+            $validatedOrder = $validateOrder->validated();
+            $validatedOrder['user_id'] = $user->id;
+            $validatedOrder['status'] = 'Processing';
+            $validatedOrder['delivery_address'] = 'North View Rd - Pangani';
+
+            $payment = Payment::where('user_id', $user->id)->first();
+
+            if (!$payment) {
+                return response()->json(['message' => 'Payment not found for the authenticated user.'], 404);
+            }
+
+            $validatedOrder['payment_id'] = $payment->id;
+
+            $createdOrder = Orders::create($validatedOrder);
+            $storedOrders[] = $createdOrder;
+        }
+
+        return response()->json(['message' => "Orders Created Successfully", 'orders' => $storedOrders],201);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+    // Other methods remain unchanged...
 }

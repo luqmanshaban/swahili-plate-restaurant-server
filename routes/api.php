@@ -36,7 +36,8 @@ Route::group(['middleware' => ['auth:sanctum', 'role:customer']], function() {
     Route::get('/orders/active', [OrderController::class, 'activeOrders']);
     Route::apiResource('payments', PaymentController::class);
     //orders
-    Route::post('orders',[OrderController::class, 'store']);
+    // Route::post('orders',[OrderController::class, 'store']);
+    Route::apiResource('orders', OrderController::class);
     Route::apiResource('customer-details', CustomerDetailsController::class);
     Route::post('/user/logout', [AuthController::class, 'logout']);
 });
