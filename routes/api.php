@@ -3,6 +3,7 @@
 use App\Http\Controllers\admin\AdminController;
 use App\Http\Controllers\admin\UserController;
 use App\Http\Controllers\AllMenusController;
+use App\Http\Controllers\admin\AdminDetailsController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\customer\CustomerController;
 use App\Http\Controllers\customer\CustomerDetailsController;
@@ -27,8 +28,9 @@ Route::group(['middleware' => ['auth:sanctum', 'role:admin']], function() {
     Route::post('/admin/assign-role/{userId}', [RoleController::class, 'assignRole']);
     Route::get('/admin/dashboard', [AdminController::class, 'index']);
     Route::get('/admin/get-customers', [AdminController::class, 'getAllCustomers']);
-    Route::post('/admin/logout', [AuthController::class, 'logout']);
+    Route::apiResource('admin-details', AdminDetailsController::class);
     Route::apiResource('users', UserController::class);
+    Route::post('/admin/logout', [AuthController::class, 'logout']);
 });
 
 Route::group(['middleware' => ['auth:sanctum', 'role:customer']], function() {

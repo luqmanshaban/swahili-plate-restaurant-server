@@ -1,28 +1,39 @@
 <?php
 
-namespace App\Http\Controllers\customer;
+namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use Auth;
 use Illuminate\Http\Request;
 
-class CustomerDetailsController extends Controller
+class AdminDetailsController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
-    {
-        try {
+{
+    try {
         $user = Auth::user();
         $roles = $user->roles->pluck('role')->toArray();
+        
         if ($user) {
-            return response()->json(['firstname' => $user->firstname, 'lastname' => $user->lastname, 'email' => $user->email, 'role' => $roles]);
+            $response = [
+                "details" => [
+                    "firstname" => $user->firstname,
+                    "lastname" => $user->lastname,
+                    "email" => $user->email,
+                    "role" => $roles
+                ]
+            ];
+            
+            return response()->json($response);
         }
     } catch (\Exception $error) {
         return response()->json(['error' => $error->getMessage()]);
     }
-    }
+}
+
 
     /**
      * Store a newly created resource in storage.
