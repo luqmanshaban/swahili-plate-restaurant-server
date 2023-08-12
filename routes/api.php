@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\admin\AdminController;
+use App\Http\Controllers\admin\AdminProfilePictureController;
 use App\Http\Controllers\admin\UserController;
 use App\Http\Controllers\AllMenusController;
 use App\Http\Controllers\admin\AdminDetailsController;
@@ -29,6 +30,7 @@ Route::group(['middleware' => ['auth:sanctum', 'role:admin']], function() {
     Route::get('/admin/dashboard', [AdminController::class, 'index']);
     Route::get('/admin/get-customers', [AdminController::class, 'getAllCustomers']);
     Route::apiResource('admin-details', AdminDetailsController::class);
+    Route::apiResource('profiles', AdminProfilePictureController::class);
     Route::apiResource('users', UserController::class);
     Route::post('/admin/logout', [AuthController::class, 'logout']);
 });
