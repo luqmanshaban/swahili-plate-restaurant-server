@@ -13,10 +13,22 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
-
-        return response()->json(['users' => $users]);
+        $users = User::with('roles')->get();
+    
+        $formattedUsers = $users->map(function ($user) {
+            return [
+                'id' => $user->id,
+                'firstname' => $user->firstname,
+                'lastname' => $user->lastname,
+                'email' => $user->email,
+                'image' => $user->image,
+                'roles' => $user->roles->pluck('role')->toArray(),
+            ];
+        });
+    
+        return response()->json(['users' => $formattedUsers]);
     }
+    
 
     /**
      * Store a newly created resource in storage.
