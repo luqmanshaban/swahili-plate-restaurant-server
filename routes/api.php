@@ -8,6 +8,7 @@ use App\Http\Controllers\admin\AdminDetailsController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\customer\CustomerController;
 use App\Http\Controllers\customer\CustomerDetailsController;
+use App\Http\Controllers\menu\AdminMenuController;
 use App\Http\Controllers\menu\MenuController;
 use App\Http\Controllers\order\OrderController;
 use App\Http\Controllers\PaymentController;
@@ -32,6 +33,9 @@ Route::group(['middleware' => ['auth:sanctum', 'role:admin']], function() {
     Route::apiResource('admin-details', AdminDetailsController::class);
     Route::apiResource('profiles', AdminProfilePictureController::class);
     Route::apiResource('users', UserController::class);
+    Route::apiResource('menus', AdminMenuController::class);
+    Route::put('/admin/menus/{id}', [AdminMenuController::class, 'update']);
+    Route::delete('/admin/menus/{id}', [AdminMenuController::class, 'destroy']);
     Route::post('/admin/logout', [AuthController::class, 'logout']);
 });
 
