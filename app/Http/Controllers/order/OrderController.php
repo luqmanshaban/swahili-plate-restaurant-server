@@ -47,7 +47,7 @@ class OrderController extends Controller
 
             $validatedOrder = $validateOrder->validated();
             $validatedOrder['user_id'] = $user->id;
-            $validatedOrder['status'] = 'Processing';
+            $validatedOrder['status'] = 'active';
             $validatedOrder['delivery_address'] = 'North View Rd - Pangani';
 
             $payment = Payment::where('user_id', $user->id)->first();
