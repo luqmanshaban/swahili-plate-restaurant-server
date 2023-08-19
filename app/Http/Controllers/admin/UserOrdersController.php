@@ -29,6 +29,11 @@ class UserOrdersController extends Controller
     {
         //
     }
+    public function history(Request $request) {
+        Auth::user();
+        $orders = Orders::with('user')->where('status', 'completed')->get();
+        return response()->json(['orders' => $orders], 200);
+    }
 
     /**
      * Display the specified resource.

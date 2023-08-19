@@ -14,14 +14,24 @@ class CustomerDetailsController extends Controller
     public function index()
     {
         try {
-        $user = Auth::user();
-        $roles = $user->roles->pluck('role')->toArray();
-        if ($user) {
-            return response()->json(['firstname' => $user->firstname, 'lastname' => $user->lastname, 'email' => $user->email, 'role' => $roles]);
+            $user = Auth::user();
+            $roles = $user->roles->pluck('role')->toArray();
+            
+            if ($user) {
+                $response = [
+                    "details" => [
+                        "firstname" => $user->firstname,
+                        "lastname" => $user->lastname,
+                        "email" => $user->email,
+                        "role" => $roles
+                    ]
+                ];
+                
+                return response()->json($response);
+            }
+        } catch (\Exception $error) {
+            return response()->json(['error' => $error->getMessage()]);
         }
-    } catch (\Exception $error) {
-        return response()->json(['error' => $error->getMessage()]);
-    }
     }
 
     /**

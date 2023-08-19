@@ -9,6 +9,7 @@ use App\Http\Controllers\admin\AdminDetailsController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\customer\CustomerController;
 use App\Http\Controllers\customer\CustomerDetailsController;
+use App\Http\Controllers\customer\CustomerProfilePictureController;
 use App\Http\Controllers\menu\AdminMenuController;
 use App\Http\Controllers\menu\MenuController;
 use App\Http\Controllers\order\OrderController;
@@ -36,7 +37,8 @@ Route::group(['middleware' => ['auth:sanctum', 'role:admin']], function() {
     Route::apiResource('users', UserController::class);
     Route::apiResource('menus', AdminMenuController::class);
     Route::apiResource('user-orders', UserOrdersController::class);
-    Route::put('/user-orders/{id}', [UserOrdersController::class, 'update']);
+    Route::put('/user-orders/{id}', [UserOrdersController::class, 'update']);            
+    Route::get('/order-history', [UserOrdersController::class, 'history']);            
     Route::put('/admin/menus/{id}', [AdminMenuController::class, 'update']);
     Route::delete('/admin/menus/{id}', [AdminMenuController::class, 'destroy']);
     Route::post('/admin/logout', [AuthController::class, 'logout']);
@@ -49,6 +51,7 @@ Route::group(['middleware' => ['auth:sanctum', 'role:customer']], function() {
     //orders
     // Route::post('orders',[OrderController::class, 'store']);
     Route::apiResource('orders', OrderController::class);
+    Route::apiResource('customer-profile-pictures', CustomerProfilePictureController::class);
     Route::apiResource('customer-details', CustomerDetailsController::class);
     Route::post('/user/logout', [AuthController::class, 'logout']);
 });
