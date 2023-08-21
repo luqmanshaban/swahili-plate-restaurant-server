@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
@@ -21,12 +22,14 @@ class AuthController extends Controller
             return response()->json(['errors' => $validator->errors()], 400);
         }
 
-        
+        $customerRole = Role::where('role', 'customer')->first();
+       
         
         $validatedUser = $validator->validated();
         $validatedUser['password'] = bcrypt($validatedUser['password']);
 
-        User::create($validatedUser);
+        $user = User::create($validatedUser);
+        $user->roles()->attach($customerRole->id);
 
         return response()->json(['message' => "User Created Successfully", 'user' => $validatedUser], 201);
     }
@@ -39,7 +42,7 @@ class AuthController extends Controller
     
             // $admin = $user->hasRole('admin');
             $roles = $user->roles->pluck('role')->toArray();
-            $token = $user->createToken('auth-token')->plainTextToken;
+            $token = $user->createToken('auth-token')->plainTextToken;            
             
             return response()->json([
                 'token' => $token,
