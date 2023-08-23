@@ -46,11 +46,13 @@ Route::group(['middleware' => ['auth:sanctum', 'role:admin']], function() {
 
 Route::group(['middleware' => ['auth:sanctum', 'role:customer']], function() {
     Route::get('/dashboard', [CustomerController::class, 'index']);
-    Route::get('/orders/active', [OrderController::class, 'activeOrders']);
     Route::apiResource('payments', PaymentController::class);
     //orders
-    // Route::post('orders',[OrderController::class, 'store']);
+    Route::get('/orders/active', [OrderController::class, 'activeOrders']);
+    Route::put('update-order/{id}', [OrderController::class, 'update']);
+    Route::put('cancel-order/{id}', [OrderController::class, 'cancelOrder']);
     Route::apiResource('orders', OrderController::class);
+    //
     Route::apiResource('customer-profile-pictures', CustomerProfilePictureController::class);
     Route::apiResource('customer-details', CustomerDetailsController::class);
     Route::post('/user/logout', [AuthController::class, 'logout']);

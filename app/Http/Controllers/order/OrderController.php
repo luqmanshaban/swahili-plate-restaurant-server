@@ -17,7 +17,18 @@ class OrderController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $orders = Orders::where('user_id', $user->id)->get();
+        $orders = Orders::where('user_id', $user->id)->whereIn(
+            'status', ['completed', 'cancelled']
+        )->get();
+        
+        return response()->json(['orders' => $orders]);
+    }
+
+    public function activeOrders() {
+        $user = Auth::user();
+        $orders = Orders::where('user_id', $user->id)->where(
+            'status', 'active'
+        )->get();
         
         return response()->json(['orders' => $orders]);
     }
@@ -66,4 +77,34 @@ class OrderController extends Controller
     }
 
     // Other methods remain unchanged...
+
+    public function update($id, Request $request)
+    {
+        $user = Auth::user();
+        $order = Orders::where('user_id', $user->id)->find($id);
+    
+        if (!$order) {
+            return response()->json(['message' => 'Order not found for the authenticated user.'], 404);
+        }
+    
+        $status = $request->status;
+    
+        if (!in_array($status, ['active', 'completed', 'cancelled'])) {
+            return response()->json(['message' => 'Invalid status provided.'], 400);
+        }
+    
+        $order->status = $status;
+        $order->save();
+    
+        return response()->json(['message' => 'Order status updated successfully.', 'order' => $order]);
+    }
+
+    public function cancelOrder($id) {
+        $order = Orders::findOrFail($id);
+
+        $order->status = 'cancelled';
+        $order->save();
+        return response()->json(['message' => 'Order status updated successfully.', 'order' => $order]);
+    }
+
 }

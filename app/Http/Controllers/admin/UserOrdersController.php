@@ -49,19 +49,18 @@ class UserOrdersController extends Controller
     public function update(Request $request, string $id)
     {
         // Find the order by its ID
-    $order = Orders::findOrFail($id);
-
-    // Validate and update the order's status
-    $request->validate([
-        'status' => 'required|in:active,processing,completed,cancelled',
-    ]);
-
-    $order->status = $request->input('status');
-    $order->save();
-
-    return response()->json(['message' => 'Order status updated successfully'],200);
-}
+        $order = Orders::findOrFail($id);
     
+        // Validate and update the order's status
+        $request->validate([
+            'status' => 'required|in:active,processing,completed,cancelled',
+        ]);
+    
+        $order->status = $request->status;
+        $order->save();
+    
+        return response()->json(['message' => 'Order status updated successfully'],200);
+    }
 
     /**
      * Remove the specified resource from storage.
