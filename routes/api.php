@@ -15,6 +15,7 @@ use App\Http\Controllers\menu\MenuController;
 use App\Http\Controllers\order\OrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\user\MessageController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -55,5 +56,7 @@ Route::group(['middleware' => ['auth:sanctum', 'role:customer']], function() {
     //
     Route::apiResource('customer-profile-pictures', CustomerProfilePictureController::class);
     Route::apiResource('customer-details', CustomerDetailsController::class);
+    Route::post('/messages', [MessageController::class, 'createMessage']);
+    Route::get('/messages', [MessageController::class, 'getMessages']);
     Route::post('/user/logout', [AuthController::class, 'logout']);
 });
