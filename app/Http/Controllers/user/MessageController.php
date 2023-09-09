@@ -26,6 +26,7 @@ class MessageController extends Controller
 
             $message = $validateMessage->validate();
             $message['user_id'] = $user->id;
+            $message['status'] = 'active';
 
             Message::create($message);
 

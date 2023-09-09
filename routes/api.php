@@ -14,8 +14,10 @@ use App\Http\Controllers\menu\AdminMenuController;
 use App\Http\Controllers\menu\MenuController;
 use App\Http\Controllers\order\OrderController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PayPalController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\user\MessageController;
+use App\Http\Controllers\admin\MessagesController as Messages;
 use Illuminate\Support\Facades\Route;
 
 
@@ -38,10 +40,12 @@ Route::group(['middleware' => ['auth:sanctum', 'role:admin']], function() {
     Route::apiResource('users', UserController::class);
     Route::apiResource('menus', AdminMenuController::class);
     Route::apiResource('user-orders', UserOrdersController::class);
+    Route::get('previous-orders', [UserOrdersController::class, 'getLastPreviousOrders']);
     Route::put('/user-orders/{id}', [UserOrdersController::class, 'update']);            
     Route::get('/order-history', [UserOrdersController::class, 'history']);            
     Route::put('/admin/menus/{id}', [AdminMenuController::class, 'update']);
     Route::delete('/admin/menus/{id}', [AdminMenuController::class, 'destroy']);
+    Route::get('admin/messages', [Messages::class, 'getActiveMessages']);
     Route::post('/admin/logout', [AuthController::class, 'logout']);
 });
 
@@ -58,5 +62,7 @@ Route::group(['middleware' => ['auth:sanctum', 'role:customer']], function() {
     Route::apiResource('customer-details', CustomerDetailsController::class);
     Route::post('/messages', [MessageController::class, 'createMessage']);
     Route::get('/messages', [MessageController::class, 'getMessages']);
+    //
+    Route::post('/payment', [PayPalController::class, 'processTransaction']);
     Route::post('/user/logout', [AuthController::class, 'logout']);
 });

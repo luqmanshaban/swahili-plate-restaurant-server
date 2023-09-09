@@ -26,7 +26,7 @@ class UserOrdersController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
+    { 
         //
     }
     public function history(Request $request) {
@@ -35,6 +35,12 @@ class UserOrdersController extends Controller
         return response()->json(['orders' => $orders], 200);
     }
 
+    //
+    public function getLastPreviousOrders() {
+        Auth::user();
+        $orders = Orders::with('user')->orderBy('created_at', 'desc')->take(5)->get();
+        return response()->json(['orders' => $orders], 200);
+    }
     /**
      * Display the specified resource.
      */

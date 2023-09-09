@@ -13,6 +13,11 @@ class Message extends Model
         'user_id',
         'email',
         'topic',
-        'message'
+        'message',
+        'status'
     ];
+
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
 }
