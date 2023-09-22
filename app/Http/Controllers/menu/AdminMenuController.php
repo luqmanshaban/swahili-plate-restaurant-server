@@ -27,38 +27,30 @@ class AdminMenuController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-         Auth::user();
-        
-        $validateMenu = Validator::make($request->all(), [
-            'name' => 'required|string',
-            'img' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Adjust validation rules
-            'price' => 'required|integer',
-            'category' => 'required|string',
-        ]);
-    
-        if ($validateMenu->fails()) {
-            return response()->json(['error' => $validateMenu->errors()], 400);
-        }
-    
-        if ($request->hasFile('img') && $request->file('img')->isValid()) {
-            $file = $request->file('img');
-            $filename = time() . '_' . $file->getClientOriginalName();
-    
-            $file->storeAs('menus', $filename, 'public');
-    
-            $menu = new Menu();
-            $menu->name = $request->name;
-            $menu->img = asset('storage/menus/' . $filename); // Make sure the asset path is correct
-            $menu->price = $request->price;
-            $menu->category = $request->category;
-            $menu->save();
-    
-            return response()->json(['success' => 'Menu created Successfully', 'menu' => $menu], 201);
-        } else {
-            return response()->json(['error' => 'Invalid image file'], 400);
-        }
+{
+    $user = Auth::user(); // Store the authenticated user in a variable
+
+    if (!$user) {
+        return response()->json(['error' => 'User not authenticated'], 401);
     }
+
+    $validator = Validator::make($request->all(), [
+        'name' => 'required|string',
+        'price' => 'required|integer',
+        'category' => 'required|string',
+        // You can add image validation here if needed
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json(['error' => $validator->errors()], 400);
+    }
+    $validatedMenu = $validator->validate();
+
+    $createMenu = Menu::create($validatedMenu);
+
+    return response()->json(['success' => 'Menu created successfully', 'menu' => $createMenu], 201);
+}
+
     
 
     /**
