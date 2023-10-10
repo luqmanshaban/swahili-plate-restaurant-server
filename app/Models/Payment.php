@@ -16,4 +16,9 @@ class Payment extends Model
         'transaction_id',
         'status'
     ];
+
+    public function payment() {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
+

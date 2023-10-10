@@ -50,6 +50,7 @@ class OrderController extends Controller
                 'quantity' => 'required|integer',
                 'total' => 'required|integer',
                 'contact' => 'nullable|string',
+                'payment_id' => 'required|string',
             ]);
 
             if ($validateOrder->fails()) {
@@ -61,13 +62,18 @@ class OrderController extends Controller
             $validatedOrder['status'] = 'active';
             $validatedOrder['delivery_address'] = 'North View Rd - Pangani';
 
-            $payment = Payment::where('user_id', $user->id)->first();
+            $paymentTimeFrame = now()->subMinutes(10);
 
-            if (!$payment) {
-                return response()->json(['message' => 'Payment not found for the authenticated user.'], 404);
-            }
+            // $payment = Payment::where('user_id', $user->id)
+            // ->where('created_at', '>=', $paymentTimeFrame)
+            // ->orderBy('created_at', 'desc')
+            // ->first();
 
-            $validatedOrder['payment_id'] = $payment->id;
+            // if (!$payment) {
+            //     return response()->json(['message' => 'Payment not found for the authenticated user.'], 404);
+            // }
+
+            // $validatedOrder['payment_id'] = $payment->id;
 
             $createdOrder = Orders::create($validatedOrder);
             $storedOrders[] = $createdOrder;

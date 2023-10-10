@@ -14,7 +14,6 @@ use App\Http\Controllers\menu\AdminMenuController;
 use App\Http\Controllers\menu\MenuController;
 use App\Http\Controllers\order\OrderController;
 use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\PayPalController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\user\MessageController;
 use App\Http\Controllers\admin\MessagesController as Messages;
@@ -54,6 +53,7 @@ Route::group(['middleware' => ['auth:sanctum', 'role:customer']], function() {
     Route::apiResource('payments', PaymentController::class);
     //orders
     Route::get('/orders/active', [OrderController::class, 'activeOrders']);
+    Route::post('/order-status', [PaymentController::class, 'confirmPayment']);
     Route::put('update-order/{id}', [OrderController::class, 'update']);
     Route::put('cancel-order/{id}', [OrderController::class, 'cancelOrder']);
     Route::apiResource('orders', OrderController::class);
@@ -63,6 +63,5 @@ Route::group(['middleware' => ['auth:sanctum', 'role:customer']], function() {
     Route::post('/messages', [MessageController::class, 'createMessage']);
     Route::get('/messages', [MessageController::class, 'getMessages']);
     //
-    Route::post('/payment', [PayPalController::class, 'processTransaction']);
     Route::post('/user/logout', [AuthController::class, 'logout']);
 });
